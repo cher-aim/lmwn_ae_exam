@@ -1,0 +1,46 @@
+version: 2
+
+sources:
+    - name: raw
+      database: ae_exam_db
+      schema: main
+      description: "Raw data"
+      tables:
+      # Dimension Tables (Master)
+        - name: customers_master
+          description: "Master information of customers who have used the food delivery service"
+
+        - name: drivers_master 
+          description: "Master information of delivery drivers in the system"
+
+        - name: restaurants_master 
+          description: "Master information of restaurants participating in the platform"
+
+        - name: campaign_master
+          description: "Master information of marketing campaigns launched throughout the year"
+
+      # Fact Tables - Transaction Module
+        - name: order_transactions
+          description: "Transaction of delivery orders"
+
+        - name: support_tickets
+          description: "Transaction of the customer support requests"
+
+        - name: campaign_interactions
+          description: "Transaction of customer interactions with marketing campaigns, such as impressions, clicks, and conversions"
+
+      # Fact Tables - History Module
+        - name: driver_incentive_logs
+          identifier: order_log_incentive_sessions_driver_incentive_logs
+          description: "History of driver bonuses and incentives"
+
+        - name: order_status_logs
+          identifier: order_log_incentive_sessions_order_status_logs
+          description: "History of status updates for each order from creation to delivery or cancellation"
+
+        - name: support_ticket_status_logs
+          description: "History of status changes of each support ticket over time"
+            
+        - name: customer_app_sessions
+          identifier: order_log_incentive_sessions_customer_app_sessions
+          description: "History of customer activity during mobile application usage" 

@@ -1,0 +1,222 @@
+version: 2
+
+models:
+    - name: model_transaction_orders
+      tests:
+      - dbt_utils.expression_is_true:
+          expression: pickup_datetime >= order_datetime 
+      columns:
+        - name: order_id
+          tests:
+          - not_null
+          - unique
+          - dbt_utils.not_empty_string
+          - dbt_utils.expression_is_true:
+              expression: "LIKE 'ORD%'"
+        - name: customer_id
+          tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
+          tags: ["foreign_key", "relationships"]
+
+        - name: restaurant_id
+          tests: 
+          - not_null
+          - dbt_utils.not_empty_string
+          - relationships:
+              to: ref('stg_restaurants')
+              field: restaurant_id
+
+        - name: driver_id
+          tests: 
+          - not_null
+          - dbt_utils.not_empty_string
+          - relationships:
+              to: ref('stg_drivers')
+              field: driver_id
+
+        - name: order_datetime
+          tests:
+          - not_null 
+        
+        - name: pickup_datetime
+          tests:
+          - not_null 
+
+        - name: delivery_datetime
+          tests:
+          - not_null 
+        
+        - name: order_status
+          tests:
+          - not_null 
+          - accepted_values:
+                values: ["completed", "canceled", "failed"]
+
+        - name: delivery_zone
+          tests:
+          - not_null 
+          - accepted_values:
+              values: ['east', 'south', 'central', 'north']
+
+        - name: total_amount
+          tests:
+          - not_null 
+          - dbt_utils.expression_is_true:
+                expression: ">0"
+        
+        - name: payment_method
+          tests:
+          - not_null 
+          - accepted_values:
+              values: ['cash', 'mobile_wallet', 'credit_card']
+    - name: model_transaction_support_tickets
+      tests: 
+      - dbt_utils.expression_is_true:
+          expression: "resolved_datetime >= opened_datetime"
+      columns:
+        - name: ticket_id
+          tests:
+          - not_null 
+          - unique
+          - dbt_utils.not_empty_string
+          - dbt_utils.expression_is_true:
+              expression: "LIKE 'TKT%'"
+
+        - name: customer_id
+          tests:
+          - not_null 
+          - dbt_utils.not_empty_string
+          - relationships:
+              to: ref('stg_customers')
+              field: customer_id
+          tags: ["foreign_key", "relationships"]
+        
+        - name: driver_id
+          tests:
+          - not_null 
+          - dbt_utils.not_empty_string
+          - relationships:
+              to: ref('stg_drivers')
+              field: driver_id
+          tags: ["foreign_key", "relationships"]
+
+        - name: restaurant_id
+          tests:
+          - not_null
+          - dbt_utils.not_empty_string
+          - relationships:
+              to: ref('stg_restaurants')
+              field: restaurant_id
+          tags: ["foreign_key", "relationships"]
+        
+        - name: issue_type
+          tests:
+          - not_null 
+          - accepted_values:
+                values: ['payment', 'food', 'delivery', 'rider']
+
+        - name: issue_sub_type
+          tests:
+          - not_null 
+          - accepted_values:
+              values: ['refund', 'cold', 'not_delivered', 'rude', 'overcharged', 'wrong_item', 'late', 'no_mask']
+
+        - name: channel
+          tests:
+          - not_null 
+          - accepted_values:
+              values: ['email', 'call', 'in_app']
+
+        - name: status
+          tests:
+          - not_null
+          - accepted_values:
+              values: ['resolved', 'open', 'in_progress', 'closed']
+
+        - name: csat_score
+          tests:
+          - dbt_utils.expression_is_true:
+              expression: "BETWEEN 0 AND 5"
+        
+        - name: compensation_amount
+          tests:
+          - not_null 
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+    
+    - name: model_transaction_campaign_interactions
+      tests:
+      - dbt_utils.expression_is_true:
+          expression: |
+            CASE 
+              WHEN event_type = 'conversion' 
+              THEN order_id IS NOT NULL AND revenue > 0
+              ELSE true
+            END
+      columns:
+        - name: interaction_id
+          tests:
+          - not_null 
+          - unique
+          - dbt_utils.not_empty_string
+
+        - name: campaign_id
+          tests:
+          - not_null 
+          - dbt_utils.not_empty_string
+          - relationships:
+                to: ref('stg_campaigns')
+                field: campaign_id
+          tags: ["foreign_key", "relationships"] 
+
+        - name: customer_id
+          tests: 
+          - not_null 
+          - dbt_utils.not_empty_string
+          - relationships:
+                to: ref('stg_customers')
+                field: customer_id   
+        
+          tags: ["foreign_key", "relationships"]
+
+        - name: order_id
+          tests:
+          - dbt_utils.not_empty_string
+          - relationships:
+                to: ref('stg_orders')
+                field: order_id
+
+        - name: interaction_datetime
+          tests:
+          - not_null 
+        
+        - name: event_type
+          tests:
+           - accepted_values:
+                values: ['impression', 'click', 'conversion']
+        
+        - name: platform
+          tests:
+          - accepted_values:
+              values: ['google', 'facebook', 'tiktok']
+
+        - name: device_type
+          tests:
+          - accepted_values:
+              values: ['ios', 'web', 'android']
+
+        - name: ad_cost
+          tests:
+          - not_null 
+          - dbt_utils.expression_is_true:
+              expression: ">= 0"
+        
+        - name: revenue
+          tests:
+          - not_null 
+          - dbt_utils.expression_is_true:
+              expression: "> 0"

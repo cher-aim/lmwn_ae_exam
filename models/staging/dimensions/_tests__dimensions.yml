@@ -1,0 +1,110 @@
+version: 2
+
+models:
+    - name: model_dim_customers
+      columns:
+        - name: customer_id 
+          tests: 
+          - not_null 
+          - unique 
+          - dbt_utils.not_empty_string
+          - dbt_utils.expression_is_true:
+              expression: "LIKE 'CUST%'"
+              
+        - name: status
+          tests:
+            - accepted_values:
+                values: ["inactive", "active"]
+
+        - name: referral_source
+          tests:
+          - not_null
+          - accepted_values:
+              values: ['ads', 'social', 'friend', 'search', 'campaign']
+
+        - name: preferred_device
+          tests:
+            - accepted_values:
+                values: ["ios", "android", "web"]
+    - name: model_dim_drivers
+      columns:
+      - name: driver_id
+        tests: 
+        - unique
+        - not_null 
+        - dbt_utils.not_empty_string
+        - dbt_utils.expression_is_true:
+              expression: "LIKE 'DRV%'"
+
+      - name: vehicle_type
+        tests:
+        - accepted_values:
+            values: ["car", "van", "bike"]
+
+      - name: active_status
+        tests:
+        - accepted_values:
+            values: ["inactive", "active"]
+
+      - name: driver_rating
+        tests:
+        - dbt_utils.expression_is_true:
+            expression: "BETWEEN 0.0 AND 5.0"
+
+      - name: region
+        tests:
+          - accepted_values:
+              values: ['east', 'north', 'central', 'south', 'metro']
+
+      - name: bonus_tier
+        description: "Driver bonus tier based on performance"
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['bronze', 'silver', 'gold', 'platinum']
+
+    - name: model_dim_campaigns
+      columns:
+      - name: campaign_id
+        tests:
+        - not_null
+        - unique
+        - dbt_utils.not_empty_string
+        - dbt_utils.expression_is_true:
+              expression: "LIKE 'CMP%'"
+
+      - name: campaign_type
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['retargeting', 'seasonal', 'loyalty', 'acquisition']
+      
+      - name: campaign_name
+        tests:
+          - not_null
+          - dbt_utils.not_empty_string
+
+    - name: model_dim_restaurants
+      columns:
+      - name: restaurant_id
+        tests:
+        - not_null
+        - unique
+        - dbt_utils.not_empty_string
+        - dbt_utils.expression_is_true:
+              expression: "LIKE 'REST%'"
+
+      - name: name
+        tests:
+        - not_null 
+        - dbt_utils.not_empty_string
+
+      - name: category
+        tests:
+        - not_null 
+        - accepted_values:
+              values: ['Vegan', 'Western', 'Japanese', 'Coffee', 'Fast Food', 'Bakery', 'Thai']
+              
+      - name: city 
+        tests:
+        - not_null 
