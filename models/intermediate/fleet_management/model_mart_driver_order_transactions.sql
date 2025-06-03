@@ -20,7 +20,8 @@ SELECT
 	ot.delivery_zone,
 	ot.total_amount,
 	ot.is_late_delivery,
-	ot.delivery_distance_km
+	ot.delivery_distance_km,
+    DATEDIFF('minute', pickup_datetime, delivery_datetime) AS delivery_minutes
 FROM {{ ref('model_transaction_orders') }} ot 
 LEFT JOIN {{ ref('model_dim_drivers') }} dm 
 ON ot.driver_id = dm.driver_id
