@@ -1,7 +1,7 @@
 {{
   config(
     materialized = 'table',
-    schema = 'data_mart'
+    schema = 'data_mart_customer_service'
     )
 }}
 
