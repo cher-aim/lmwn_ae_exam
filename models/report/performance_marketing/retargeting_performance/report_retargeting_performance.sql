@@ -16,7 +16,8 @@ WITH retargeting_customers AS (
         MIN(CASE WHEN order_status = 'completed' THEN order_datetime END) AS first_order_after_retargeting,
         SUM(CASE WHEN order_status = 'completed' THEN revenue ELSE 0 END) as customer_spend_after_retargeting
     FROM {{ ref('model_mart_campaign_interactions') }}
-    WHERE campaign_type = 'retargeting' AND customer_segment IN ('loyal', 'churn_risk', 'inactive')
+    WHERE campaign_type = 'retargeting' AND (customer_segment IN ('churn_risk', 'inactive') 
+    OR (customer_segment = 'loyal' AND customer_status = 'inactive'))
     GROUP BY 
     	customer_id, 
     	campaign_id, 
