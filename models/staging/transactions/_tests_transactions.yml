@@ -135,7 +135,7 @@ models:
           tests:
           - not_null
           - accepted_values:
-              values: ['resolved', 'open', 'in_progress', 'closed']
+              values: ['resolved']
 
         - name: csat_score
           tests:
