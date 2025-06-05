@@ -24,6 +24,6 @@ SELECT
     DATEDIFF('minute', pickup_datetime, delivery_datetime) AS delivery_minutes
 FROM {{ ref('model_transaction_orders') }} ord 
 LEFT JOIN {{ ref('model_dim_drivers') }} driver  
-ON ot.driver_id = dm.driver_id
+ON ord.driver_id = driver.driver_id
 LEFT JOIN {{ ref('model_dim_restaurants') }} restaurant
-ON r.restaurant_id = ot.restaurant_id
+ON restaurant.restaurant_id = ord.restaurant_id
