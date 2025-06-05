@@ -1,0 +1,37 @@
+
+    select
+      count(*) as failures,
+      count(*) != 0 as should_warn,
+      count(*) != 0 as should_error
+    from (
+      
+    
+  
+
+    with
+    
+    all_values as (
+
+        select 
+
+
+            trim(customer_id) as customer_id
+            
+        from "ae_exam_db"."main"."model_transaction_support_tickets"
+
+    ),
+
+    errors as (
+
+        select * from all_values
+        where customer_id = ''
+
+    )
+
+    select * from errors
+
+
+  
+  
+      
+    ) dbt_internal_test

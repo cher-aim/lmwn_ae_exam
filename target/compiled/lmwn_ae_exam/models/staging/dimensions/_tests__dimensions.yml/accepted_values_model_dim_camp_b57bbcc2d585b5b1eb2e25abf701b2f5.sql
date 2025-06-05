@@ -1,0 +1,22 @@
+
+    
+    
+
+with all_values as (
+
+    select
+        campaign_type as value_field,
+        count(*) as n_records
+
+    from "ae_exam_db"."main"."model_dim_campaigns"
+    group by campaign_type
+
+)
+
+select *
+from all_values
+where value_field not in (
+    'retargeting','seasonal','loyalty','acquisition'
+)
+
+

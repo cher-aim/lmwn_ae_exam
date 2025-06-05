@@ -1,0 +1,122 @@
+version: 2
+
+models:
+    - name: model_log_order_status
+      columns: 
+        - name: log_id
+          tests: 
+            - not_null
+            - unique
+
+        - name: order_id
+          tests:
+            - relationships:
+                to: ref('stg_orders')  
+                field: order_id
+
+        - name: status
+          tests:
+            - not_null
+            - accepted_values:
+                values: 
+                  ['created', 'accepted', 'picked_up', 'completed', 'canceled', 'failed']
+        
+        - name: status_datetime
+          tests:
+            - not_null 
+        
+        - name: updated_by 
+          tests:
+            - not_null 
+            - dbt_utils.not_empty_string
+      
+    - name: model_log_support_ticket_status
+      columns:
+        - name: log_id
+          tests:
+            - not_null 
+            - unique
+
+        - name: ticket_id
+          tests: 
+            - not_null 
+            - relationships:
+                to: ref('stg_support_tickets')  
+                field: ticket_id
+
+        - name: status
+          tests:
+            - accepted_values:
+                values: ['opened', 'resolved']
+            - not_null
+
+        - name: status_datetime
+          tests:
+            - not_null 
+        
+        - name: agent_id
+          tests:
+            - not_null 
+    
+    - name: model_log_driver_incentive
+      columns:
+        - name: log_id
+          tests:
+            - not_null 
+            - unique
+        
+        - name: driver_id
+          tests:
+            - dbt_utils.expression_is_true:
+                expression: "LIKE 'DRV%'"
+            - not_null 
+            - relationships:
+                to: ref('stg_drivers')  
+                field: driver_id
+          
+        - name: incentive_program
+          tests:
+            - accepted_values:
+                values: ['weekly_bonus', 'rainy_day', 'holiday_special']
+            - not_null 
+
+        - name: bonus_amount
+          tests:
+            - dbt_utils.expression_is_true:
+                expression: "> 0"
+        
+        - name: region
+          tests:
+            - accepted_values:  
+                values: ['central', 'north', 'south', 'metro', 'east']
+      
+    - name: model_log_customer_app_sessions
+      columns:
+        - name: session_id
+          tests:
+            - not_null 
+            - unique
+
+        - name: customer_id
+          tests: 
+            - not_null 
+            - relationships:
+                to: ref('stg_customers')
+                field: customer_id
+        
+        - name: session_start
+          tests: 
+            - not_null 
+            - dbt_utils.expression_is_true:
+                expression: "< session_end"
+        
+        - name: session_end 
+          tests:
+            - not_null 
+        
+        - name: device_type
+          tests:
+            - accepted_values:
+                values: ['web', 'ios', 'android']
+        
+        
