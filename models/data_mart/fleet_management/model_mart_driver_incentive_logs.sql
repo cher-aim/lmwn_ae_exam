@@ -14,6 +14,6 @@ SELECT
 	di.delivery_target,
 	di.actual_deliveries,
 	di.bonus_qualified
-FROM {{ ref('model_log_driver_incentive') }} di 
-JOIN {{ ref('model_dim_drivers') }} dm
+FROM {{ ref('model_log_driver_incentive') }} incentive
+JOIN {{ ref('model_dim_drivers') }} driver
 ON dm.driver_id = di.driver_id  

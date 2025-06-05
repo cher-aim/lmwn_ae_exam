@@ -6,24 +6,24 @@
 }}
 
 SELECT 
-	dm.driver_id,
-	dm.vehicle_type,
-	dm.region AS driver_region,
-	r.city,
-	dm.active_status,
-	dm.driver_rating,
-	ot.order_id,
-	ot.order_datetime,
-	ot.pickup_datetime,
-	ot.delivery_datetime,
-	ot.order_status,
-	ot.delivery_zone,
-	ot.total_amount,
-	ot.is_late_delivery,
-	ot.delivery_distance_km,
+	driver.driver_id,
+	driver.vehicle_type,
+	driver.region AS driver_region,
+	restaurant.city,
+	driver.active_status,
+	driver.driver_rating,
+	ord.order_id,
+	ord.order_datetime,
+	ord.pickup_datetime,
+	ord.delivery_datetime,
+	ord.order_status,
+	ord.delivery_zone,
+	ord.total_amount,
+	ord.is_late_delivery,
+	ord.delivery_distance_km,
     DATEDIFF('minute', pickup_datetime, delivery_datetime) AS delivery_minutes
-FROM {{ ref('model_transaction_orders') }} ot 
-LEFT JOIN {{ ref('model_dim_drivers') }} dm 
+FROM {{ ref('model_transaction_orders') }} ord 
+LEFT JOIN {{ ref('model_dim_drivers') }} driver  
 ON ot.driver_id = dm.driver_id
-LEFT JOIN {{ ref('model_dim_restaurants') }} r 
+LEFT JOIN {{ ref('model_dim_restaurants') }} restaurant
 ON r.restaurant_id = ot.restaurant_id
