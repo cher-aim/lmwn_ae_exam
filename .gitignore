@@ -1,2 +1,4 @@
 
-target/
+/target/
+/dbt_packages/
+logs/*.log
