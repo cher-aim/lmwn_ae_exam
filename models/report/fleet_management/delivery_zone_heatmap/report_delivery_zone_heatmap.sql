@@ -35,8 +35,10 @@ SELECT
     ROUND((failure_deliveries * 100.0 / total_delivery_request), 2) AS failure_rate_pct,
     active_drivers,
     inactive_driver,
-    ROUND((total_delivery_request/ COALESCE(active_drivers, 0)), 2) AS delivery_requests_per_active_driver,
-    ROUND((completed_deliveries/ COALESCE(active_drivers, 0)), 2) AS completed_per_driver,
+    CASE WHEN active_drivers > 0 AND active_drivers IS NOT NULL THEN 
+    ROUND((total_delivery_request/ active_drivers),  2) END AS delivery_requests_per_active_driver,
+    CASE WHEN active_drivers > 0 AND active_drivers IS NOT NULL THEN 
+    ROUND((completed_deliveries/ active_drivers), 2) AS completed_per_driver,
     total_late_deliveries,
     ROUND((total_late_deliveries * 100.0 / completed_deliveries), 2) AS late_delivery_rate_pct,
     ROUND(avg_delivery_time_mins, 2) AS avg_delivery_time_mins,

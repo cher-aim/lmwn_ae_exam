@@ -11,7 +11,6 @@ SELECT
 	campaign_name,
 	campaign_type,
 	campaign_objective,
-	cost_model,
 	SUM(ad_cost) AS total_campaign_cost,
 	SUM(CASE WHEN order_status = 'completed' THEN revenue ELSE 0 END) AS total_revenue,
 	COUNT(DISTINCT customer_id) as customers_reached,
@@ -31,8 +30,7 @@ GROUP BY
 	campaign_id,
 	campaign_name,
 	campaign_type,
-	campaign_objective,
-	cost_model
+	campaign_objective
 )
 SELECT 
 	campaign_id,
@@ -46,6 +44,7 @@ SELECT
 	total_revenue,
 	customers_reached,
 	customers_purchased,
+    new_customers_acquired,
 	CASE 
         WHEN customers_reached > 0 
         THEN ROUND((customers_purchased::FLOAT / customers_reached::FLOAT) * 100, 2)

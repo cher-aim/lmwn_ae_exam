@@ -29,6 +29,7 @@ SELECT
     completion_rate_percent,
     on_time_deliveries,
     late_deliveries,
-    ROUND(late_deliveries * 100.0 / COALESCE(tasks_completed, 0), 2) AS late_delivery_rate_percent,
+    CASE WHEN tasks_completed IS NOT NULL OR tasks_completed > 0 THEN 
+    ROUND(late_deliveries * 100.0 / tasks_completed, 2) END AS late_delivery_rate_percent,
     avg_time_to_complete
 FROM driver_performance
