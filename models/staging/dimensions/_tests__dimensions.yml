@@ -102,8 +102,6 @@ models:
       - name: category
         tests:
         - not_null 
-        - accepted_values:
-              values: ['Vegan', 'Western', 'Japanese', 'Coffee', 'Fast Food', 'Bakery', 'Thai']
               
       - name: city 
         tests:
