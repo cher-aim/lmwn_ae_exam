@@ -10,8 +10,8 @@ SELECT
 	issue_sub_type,
 	COUNT(*) AS total_reported_count,
 	ROUND((COUNT(*) / (SELECT COUNT(*) FROM {{ ref('model_mart_support_tickets') }})) * 100, 2) AS pct_of_total,
-	COUNT(CASE WHEN status = 'resolved' AND resolved_datetime IS NOT NULL  THEN 1 END) AS resolved_count,
-    ROUND(COUNT(CASE WHEN resolved_datetime IS NOT NULL THEN 1 END) * 100.0 / COUNT(*), 2) AS resolution_rate_percent,
+	COUNT(CASE WHEN status != 'resolved' AND resolved_datetime IS NOT NULL  THEN 1 END) AS unresolved_count,
+    ROUND(COUNT(CASE WHEN status = 'resolved' THEN 1 END) * 100.0 / COUNT(*), 2) AS resolution_rate_percent,
 	ROUND(AVG(CASE WHEN status = 'resolved' AND resolved_datetime IS NOT NULL 
 	    THEN  resolved_duration_hours
 	END), 2)  AS avg_resolution_time_hours,

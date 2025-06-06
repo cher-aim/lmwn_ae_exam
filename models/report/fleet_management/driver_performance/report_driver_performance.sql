@@ -9,7 +9,8 @@ WITH driver_performance AS (
 SELECT 
 	driver_id,
 	COUNT(*) AS tasks_assigned,
-	COUNT(CASE WHEN order_status = 'completed' THEN 1 ELSE 0 END) AS tasks_completed,
+	COUNT(CASE WHEN order_status = 'completed' THEN 1 END) AS tasks_completed,
+    COUNT(CASE WHEN order_status IS NOT NULL AND pickup_datetime IS NOT NULL THEN 1 END) AS task_accepted, 
     COUNT(CASE WHEN order_status = 'canceled' THEN 1 END) AS tasks_canceled,
 	COUNT(CASE WHEN order_status ='failed' THEN 1 END) AS tasks_failed,
 	ROUND(COUNT(CASE WHEN order_status = 'completed' THEN 1 END) * 100.0 / COUNT(*), 2) AS completion_rate_percent,
@@ -24,6 +25,7 @@ SELECT
 	driver_id,
     tasks_assigned,
     tasks_completed,
+    task_accepted,
     tasks_canceled,
     tasks_failed,
     completion_rate_percent,

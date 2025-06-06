@@ -70,10 +70,10 @@ SELECT
         WHEN daily_cost > 0 
         THEN ROUND(daily_revenue / daily_cost, 2)
         ELSE 0 
-    END AS daily_roas,
+    END AS daily_return_on_ad_spend,
     CASE 
         WHEN new_customers_acquired > 0 
         THEN ROUND(daily_cost / new_customers_acquired, 2)
         ELSE NULL 
-    END AS daily_cpa
+    END AS daily_cost_per_acquired_customer
 FROM daily_campaign_metrics

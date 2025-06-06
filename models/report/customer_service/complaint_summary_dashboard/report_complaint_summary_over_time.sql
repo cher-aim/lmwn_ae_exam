@@ -36,8 +36,8 @@ SELECT
     st.day_type,
     st.day_name,
     COUNT(*) AS total_issues_reported,
-    COUNT(CASE WHEN st.status = 'resolved' AND st.resolved_datetime IS NOT NULL THEN 1 END) AS resolved_count,
-    ROUND(COUNT(CASE WHEN st.resolved_datetime IS NOT NULL THEN 1 END) * 100.0 / COUNT(*), 2) AS resolution_rate_percent,
+    COUNT(CASE WHEN st.status != 'resolved' AND st.resolved_datetime IS NOT NULL THEN 1 END) AS unresolved_count,
+    ROUND(COUNT(CASE WHEN st.status = 'resolved' THEN 1 END) * 100.0 / COUNT(*), 2) AS resolution_rate_percent,
     ROUND(AVG(
         CASE WHEN st.status = 'resolved' AND st.resolved_datetime IS NOT NULL
         THEN resolved_duration_hours
